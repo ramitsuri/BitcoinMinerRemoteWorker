@@ -28,7 +28,6 @@ class MinerRemoteWorker extends Actor{
         zeroString +="0"
       }
       if(hashedString.startsWith(zeroString)){
-        hashedString+=" from Remote "
         sender() ! Done(hashedString, stringToHash)
       }
     }
@@ -39,6 +38,9 @@ object RemoteWorker extends App{
   override def main(args: Array[String]) {
     val system = ActorSystem("RemoteWorkerSystem")
     val minerRemoteWorkerActor = system.actorOf(Props[MinerRemoteWorker], name = "MinerRemoteWorker")
-    minerRemoteWorkerActor ! Start(args(0))
+    if(args.length!=0)
+      minerRemoteWorkerActor ! Start(args(0))
+    else
+      minerRemoteWorkerActor ! Start("127.0.0.1:8080")
   }
 }
